@@ -1,0 +1,8 @@
+__pycache__/
+dist
+.pytest_cache/
+.venv
+test_data_large/
+test_results/
+**/.ipynb_checkpoints
+.DS_Store
