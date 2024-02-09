@@ -6,9 +6,9 @@ import tqdm as tqdm
 import mappy as mp
 from tqdm import tqdm
 
-import logging
+#import logging
 # Set the logging level to INFO
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 from pgqc.utils import parse_PresAbs_CSV_General, get_columns_excluding, parse_PG_Ref_FA
 
@@ -156,31 +156,31 @@ def asmseqcheck_frompaths(i_Gene_PresAbs_CSV_PATH,
 
     # 1) Parse in Gene Pres/Abs matrix and select sampleIDs
 
-    logging.info("Parsing input gene presence/absence matrix...")
+    print("Parsing input gene presence/absence matrix...")
     Gene_PresAbs_DF = parse_PresAbs_CSV_General(i_Gene_PresAbs_CSV_PATH)
     
     i_SampleIDs = get_columns_excluding(Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
 
-    logging.info("Finished parsing gene presence/absence matrix\n")
+    print("Finished parsing gene presence/absence matrix\n")
 
     # 2) Read in pan-genome (nucleotide) reference fasta
-    logging.info("Parsing input gene reference fasta")
+    print("Parsing input gene reference fasta")
     PG_Ref_NucSeqs = parse_PG_Ref_FA(i_PG_Ref_FA_PATH)
-    logging.info("Finished parsing gene reference fasta\n")
+    print("Finished parsing gene reference fasta\n")
 
     # 3) Read in genome assembly fasta PATH TSV, convert to dict
-    logging.info("Parsing TSV of input assembly PATHs")
+    print("Parsing TSV of input assembly PATHs")
     AsmFA_Dict = create_AsmFA_PATH_Dict(i_AsmFA_TSV)
-    logging.info("Finished parsing input assembly PATHs \n")
+    print("Finished parsing input assembly PATHs \n")
     
     # 4) Run alignments to check for gene sequences in assemblies
-    logging.info("Running alignments to check for gene sequences in assemblies...")
+    print("Running alignments to check for gene sequences in assemblies...")
 
     Gene_PresAbs_WiAsmSeqCheck_DF = PresAbsQC_CheckAsmForGeneSeq(Gene_PresAbs_DF, PG_Ref_NucSeqs,
                                                                 AsmFA_Dict, i_SampleIDs,
                                                                 MinQueryCov, MinQuerySeqID)
 
-    logging.info("Finished searching for gene sequences in assemblies \n")
+    print("Finished searching for gene sequences in assemblies \n")
 
 
     return Gene_PresAbs_WiAsmSeqCheck_DF
@@ -196,31 +196,31 @@ def SRandLRQC_asmseqcheck_frompaths(i_SR_Gene_PresAbs_CSV_PATH,
 
     # 1) Parse in Gene Pres/Abs matrix and select sampleIDs
 
-    logging.info("Parsing input gene presence/absence matrix...")
+    print("Parsing input gene presence/absence matrix...")
     SR_Gene_PresAbs_DF = parse_PresAbs_CSV_General(i_SR_Gene_PresAbs_CSV_PATH)
     
     i_SampleIDs = get_columns_excluding(SR_Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
 
-    logging.info("Finished parsing gene presence/absence matrix\n")
+    print("Finished parsing gene presence/absence matrix\n")
 
     # 2) Read in pan-genome (nucleotide) reference fasta (For SR based analysis)
-    logging.info("Parsing input gene reference fasta")
+    print("Parsing input gene reference fasta")
     SR_PG_Ref_NucSeqs = parse_PG_Ref_FA(i_SR_PG_Ref_FA_PATH)
-    logging.info("Finished parsing gene reference fasta\n")
+    print("Finished parsing gene reference fasta\n")
 
     # 3) Read in LR and SR assemblies PATH TSV, convert to dictionaries (For LR and SR based analysis)
-    logging.info("Parsing TSV of input assembly PATHs")
+    print("Parsing TSV of input assembly PATHs")
     LR_AsmFA_Dict, SR_AsmFA_Dict = create_LRandSR_AsmFA_PATH_Dict(i_AsmFA_LRandSR_TSV)
-    logging.info("Finished parsing input assembly PATHs \n")
+    print("Finished parsing input assembly PATHs \n")
 
     # 4) Run alignments to check for gene sequences in assemblies
-    logging.info("Running alignments to check for gene sequences in assemblies...")
+    print("Running alignments to check for gene sequences in assemblies...")
 
     Gene_PresAbs_WiAsmSeqCheck_DF = SRAsm_PresAbsQC_CheckInLRAsm(SR_Gene_PresAbs_DF, SR_PG_Ref_NucSeqs,
                                                                  LR_AsmFA_Dict, SR_AsmFA_Dict, i_SampleIDs,
                                                                  MinQueryCov, MinQuerySeqID)
 
-    logging.info("Finished searching for gene sequences in both LR and SR assemblies \n")
+    print("Finished searching for gene sequences in both LR and SR assemblies \n")
 
     return Gene_PresAbs_WiAsmSeqCheck_DF
 

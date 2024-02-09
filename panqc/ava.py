@@ -3,14 +3,14 @@
 from .kmerlib import all_vs_all_kmer_MaxJC, read_kmers_from_file_ToHashesDict
 import time 
 
-import logging
+#import logging
 # Set the logging level to INFO
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 def ava(input_PG_Ref_FA, kmer_size):
 
     ## Parse and hash all k-mers for each representative nucleotide sequence
-    logging.info(" Beginning parsing of input FASTA")
+    print("Beginning parsing of input FASTA")
 
     start = time.time()
 
@@ -20,11 +20,12 @@ def ava(input_PG_Ref_FA, kmer_size):
 
     end = time.time()
     time_diff = end - start
-    logging.info(f" Time to parse and hash all k-mers: {round(time_diff, 2)} seconds")
+    print(f"Time to parse and hash all k-mers: {round(time_diff, 2)} seconds")
 
 
     ## Calculate the maximum Jaccard Containment (JC) between all pairs of sequences.
     ### NOTE: The maximum JC between sets a and b will always be symetrical, while JC is not
+    print(f"Beginning all vs all comparison of k-mer profiles:")
 
     start = time.time()
 
@@ -32,6 +33,6 @@ def ava(input_PG_Ref_FA, kmer_size):
 
     end = time.time()
     time_diff = end - start
-    logging.info(f" Time for all vs all comparison of k-mer profiles: {round(time_diff, 2)} seconds")
+    print(f"Time for all vs all comparison of k-mer profiles: {round(time_diff, 2)} seconds")
     
     return PG_AvA_DF

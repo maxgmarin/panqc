@@ -9,9 +9,9 @@ import time
 from pgqc.utils import get_columns_excluding
 
 
-import logging
+#import logging
 # Set the logging level to INFO
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 
 def create_MaxKmerSim_JC_Dict(in_AvA_DF):

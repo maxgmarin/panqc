@@ -5,7 +5,7 @@
 Pan-Genome quality control (PQQC) is a toolkit for evaluation of DNA sequence redundancy in analyzed pan-genomes (Panaroo or Roary).
 
 ## Description
-![PGQC_NRA_Diagram](Images/PGQC_NRA_Diagram.png)
+![PGQC_NRA_Diagram](Images/PanQC_NRC_Diagram.png)
 
 The PGQC Nucleotide Redundancy Analysis (PGQC-NRA) approach adjusts for redundancy at the DNA level in two steps (Methods). In step one, all genes predicted to be absent at the Amino Acid (AA) level are compared to their corresponding assembly at the nucleotide level. In cases where the nucleotide sequence is found with high coverage and sequence identity (Query Coverage & Sequence Identity > 90%), the gene is marked as “present at the DNA level”. Next, all genes are clustered and merged using a k-mer based metric of nucleotide similarity. Cases where two or more genes are divergent at the AA level but highly similar at the nucleotide level will be merged into a single “nucleotide similarity gene cluster”. After applying this method the pan-genome gene presence matrix is readjusted according to these results.
 

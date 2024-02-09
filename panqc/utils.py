@@ -61,7 +61,7 @@ def parse_PresAbs_CSV_General(PresAbs_CSV_PATH):
                         'Min group size nuc', 'Max group size nuc', 'Avg group size nuc']
 
 
-    i_Gene_PresAbs_DF = pd.read_csv(PresAbs_CSV_PATH)
+    i_Gene_PresAbs_DF = pd.read_csv(PresAbs_CSV_PATH, low_memory=False)
 
     ### Relabel Columns for presence/absence tracking
     i_Gene_PresAbs_DF.columns = [ x.split(".Bakta")[0] for x in i_Gene_PresAbs_DF.columns ]

@@ -4,7 +4,8 @@
 import pandas as pd
 import numpy as np
 
-import time
+#import time
+from tqdm import tqdm
 
 import screed
 import mmh3
@@ -146,11 +147,13 @@ def all_vs_all_kmer_JC(all_SeqIDs, dictOf_Hashes_Set, dictOf_SeqLen):
 
     return PG_AvA_DF
 
+
+
 def all_vs_all_kmer_MaxJC(all_SeqIDs, dictOf_Hashes_Set, dictOf_SeqLen):
 
     listOfTuples = []
     
-    for i, record_Name_1 in enumerate(all_SeqIDs) :
+    for i, record_Name_1 in tqdm(enumerate(all_SeqIDs)) :
         for j, record_Name_2 in enumerate(all_SeqIDs) : 
             if i < j: # Check the seqID index so that the same pair of sequences is not compared twice
 
