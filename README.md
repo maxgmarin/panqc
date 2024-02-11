@@ -1,4 +1,4 @@
-<img width="500" src="Images/panqc.logo.jpeg" alt="panqc logo">
+<img width="500" src="Images/panqc.logo.png" alt="panqc logo">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!---[![Build Status]()]()
