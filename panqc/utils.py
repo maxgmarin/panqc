@@ -54,34 +54,37 @@ def parse_PresAbs_CSV_General(PresAbs_CSV_PATH):
     '''
     This function parses the `gene_presence_absence.csv` file output by Panaroo OR Roary '''
 
+    # Suppress specific PerformanceWarning
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=pd.errors.PerformanceWarning)
 
-    ColNames_ToRemove = ['Non-unique Gene name', 'Annotation', 'No. isolates',
-                        'No. sequences', 'Avg sequences per isolate', 'Genome Fragment',
-                        'Order within Fragment', 'Accessory Fragment', 'Accessory Order with Fragment', 'QC',
-                        'Min group size nuc', 'Max group size nuc', 'Avg group size nuc']
+        ColNames_ToRemove = ['Non-unique Gene name', 'Annotation', 'No. isolates',
+                            'No. sequences', 'Avg sequences per isolate', 'Genome Fragment',
+                            'Order within Fragment', 'Accessory Fragment', 'Accessory Order with Fragment', 'QC',
+                            'Min group size nuc', 'Max group size nuc', 'Avg group size nuc']
 
 
-    i_Gene_PresAbs_DF = pd.read_csv(PresAbs_CSV_PATH, low_memory=False)
+        i_Gene_PresAbs_DF = pd.read_csv(PresAbs_CSV_PATH, low_memory=False)
 
-    ### Relabel Columns for presence/absence tracking
-    i_Gene_PresAbs_DF.columns = [ x.split(".Bakta")[0] for x in i_Gene_PresAbs_DF.columns ]
+        ### Relabel Columns for presence/absence tracking
+        i_Gene_PresAbs_DF.columns = [ x.split(".Bakta")[0] for x in i_Gene_PresAbs_DF.columns ]
 
-    ListOf_SampleID_Cols = get_columns_excluding(i_Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
-    #print(ListOf_SampleID_Cols)
-    ColsToRemove = [col for col in i_Gene_PresAbs_DF.columns if col in ColNames_ToRemove]
+        ListOf_SampleID_Cols = get_columns_excluding(i_Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
+        #print(ListOf_SampleID_Cols)
+        ColsToRemove = [col for col in i_Gene_PresAbs_DF.columns if col in ColNames_ToRemove]
 
-    i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.drop(ColsToRemove, axis=1)
+        i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.drop(ColsToRemove, axis=1)
 
-    # https://stackoverflow.com/questions/12741092/pandas-dataframe-apply-function-to-all-columns
-    i_Gene_PresAbs_DF[ListOf_SampleID_Cols] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].applymap(lambda x: 1 if isinstance(x, str) else 0)         
-    i_Gene_PresAbs_DF["NumAsm_WiGene"] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].sum(axis = 1)
 
-    i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.sort_values(by='NumAsm_WiGene', ascending=False)
-    #print(i_Gene_PresAbs_DF.head(1))
+            # https://stackoverflow.com/questions/12741092/pandas-dataframe-apply-function-to-all-columns
+            i_Gene_PresAbs_DF[ListOf_SampleID_Cols] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].applymap(lambda x: 1 if isinstance(x, str) else 0)        
+            i_Gene_PresAbs_DF["NumAsm_WiGene"] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].sum(axis = 1)
 
-    i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.set_index("Gene", drop=False)
-    #print(i_Gene_PresAbs_DF.head(1))
-    return i_Gene_PresAbs_DF  
+        i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.sort_values(by='NumAsm_WiGene', ascending=False)
+
+        i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.set_index("Gene", drop=False)
+
+        return i_Gene_PresAbs_DF  
 
 
 def PresAbs_InferSampleColOnly(i_Gene_PresAbs_DF):

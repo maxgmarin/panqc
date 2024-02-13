@@ -19,12 +19,11 @@ def parse_AlnHits_To_DF(i_AsmAlner, QuerySeq):
 
     hits = list(i_AsmAlner.map(QuerySeq, cs = True))
     
-    i_QueryLen = len(QuerySeq)
-    
     listOfAlnRows = []
 
     if hits != []:
-        
+        i_QueryLen = len(QuerySeq)
+
         for hit in hits:
         
             SeqID = hit.mlen / hit.blen

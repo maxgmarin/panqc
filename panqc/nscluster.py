@@ -128,6 +128,11 @@ PresAbs_NonSampleID_ColNames = ['Gene', 'NumAsm_WiGene', 'NumAsm_WiGene_DNASeq',
 def make_NS_ClusterMerged_Pres_DF(i_Gene_PresAbs_DF, i_Filt_Cluster_DF, ResetToBinary=True):
     
     i_SampleIDs = get_columns_excluding(i_Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
+
+    # Filter for only the Gene and SampleID columns
+    i_Gene_PresAbs_DF = i_Gene_PresAbs_DF[["Gene"] + i_SampleIDs]
+
+    #print(i_SampleIDs)
     # Extracting the original presence/absence information for genes (excluding the extra rows)
     original_gene_presence_absence = i_Gene_PresAbs_DF.set_index('Gene')[i_SampleIDs]
     
@@ -154,21 +159,16 @@ def make_NS_ClusterMerged_Pres_DF(i_Gene_PresAbs_DF, i_Filt_Cluster_DF, ResetToB
     
     # Concatenating with the original presence/absence matrix to include non-clustered genes and extra rows
     final_presence_absence_DF_with_clusters_and_all_info = pd.concat([i_Gene_PresAbs_DF[~i_Gene_PresAbs_DF['Gene'].isin(clustered_genes)], merged_cluster_presence_absence_DF], ignore_index=True)
-    
-    # Displaying the first few rows of the final presence/absence matrix
-    # final_presence_absence_DF_with_clusters_and_all_info.head()
-    
+
     PG_Pres_WiNSC_DF = final_presence_absence_DF_with_clusters_and_all_info.copy()
     
-    #PG_Pres_WiNSC_DF["NumAsm_WiGene"] = PG_Pres_WiNSC_DF[i_SampleIDs].sum(axis = 1)
-
     PG_Pres_WiNSC_DF["NumAsm_WiGene"] = PG_Pres_WiNSC_DF[i_SampleIDs].applymap(lambda x: 1 if x > 0 else 0).sum(axis = 1)
 
     PG_Pres_WiNSC_DF = PG_Pres_WiNSC_DF.sort_values(by='NumAsm_WiGene', ascending=False)
 
     if ResetToBinary: # This step will reset all NON zero values to 1. (Default Behavior)
         PG_Pres_WiNSC_DF[i_SampleIDs] = PG_Pres_WiNSC_DF[i_SampleIDs].applymap(lambda x: 1 if x > 0 else 0)
-
+    
     return PG_Pres_WiNSC_DF
 
     

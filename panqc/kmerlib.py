@@ -153,7 +153,7 @@ def all_vs_all_kmer_MaxJC(all_SeqIDs, dictOf_Hashes_Set, dictOf_SeqLen):
 
     listOfTuples = []
     
-    for i, record_Name_1 in tqdm(enumerate(all_SeqIDs)) :
+    for i, record_Name_1 in tqdm(list(enumerate(all_SeqIDs))) :
         for j, record_Name_2 in enumerate(all_SeqIDs) : 
             if i < j: # Check the seqID index so that the same pair of sequences is not compared twice
 
