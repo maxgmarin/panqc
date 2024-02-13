@@ -84,9 +84,9 @@ def make_ClusterID_Maps(i_clusters):
     
     Gene_ClusterInfo.columns = ["GeneID", "NS_ClusterName", "NS_ClusterNum"]
 
-    Gene_ClusterInfo["NS_ClusterID"] = "NS_" + Gene_ClusterInfo["NS_ClusterNum"].astype(str) + "_" + Gene_ClusterInfo["NS_ClusterName"]
+    #Gene_ClusterInfo["NS_ClusterID"] = "NS_" + Gene_ClusterInfo["NS_ClusterNum"].astype(str) + "_" + Gene_ClusterInfo["NS_ClusterName"]
+    Gene_ClusterInfo["NS_ClusterID"] = "NS_" + Gene_ClusterInfo["NS_ClusterNum"].astype(str)
 
-    
     return Gene_ClusterInfo, ClusterInfo_Dict
 
 
