@@ -39,7 +39,7 @@ def _nrc_cli(args):
                                                         min_seq_id)
     
     # 3) Print the general QC Stats 
-    ASC_Stats_DF = get_AsmSeqCheck_QCStatsDF(Gene_PresAbs_WiAsmSeqCheck_DF, print_stats=False)
+    ASC_Stats_DF = get_AsmSeqCheck_QCStatsDF(Gene_PresAbs_WiAsmSeqCheck_DF)
 
     # 4) Run all vs all comparison of sequence k-mer profiles
     PG_AvA_DF = ava(input_PG_Ref_FA, kmer_size)
