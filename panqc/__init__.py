@@ -55,7 +55,7 @@ def _nrc_cli(args):
     # 4) Output files to the results directory
 
     Step1_OutDir = f"{results_dir}/Step1_AsmSeqCheck"
-    Step2_OutDir = f"{results_dir}/Step2_DNASimilarityClustering"
+    Step2_OutDir = f"{results_dir}/Step2_SeqClustering"
 
     # Create the target directories
     os.makedirs(results_dir, exist_ok=True)
@@ -67,15 +67,12 @@ def _nrc_cli(args):
     if prefix != "": prefix = prefix + "."
 
     out_nsc_gene_matrix_TSV = f"{results_dir}/{prefix}gene_presence_absence.NRCUpdated.tsv"
-    out_asc_gene_matrix_TSV = f"{results_dir}/{prefix}gene_presence_absence.AsmSeqCheck.tsv"
 
-    out_ASC_Summ_TSV = f"{Step1_OutDir}/{prefix}AsmSeqCheck.Summary.tsv"
+    out_asc_gene_matrix_TSV = f"{Step1_OutDir}/{prefix}gene_presence_absence.AsmSeqCheck.tsv"
+    out_ASC_Summ_TSV = f"{Step1_OutDir}/{prefix}AsmSeqCheck.Stats.tsv"
 
     output_AvA_TSV = f"{Step2_OutDir}/{prefix}AllVsAll.KmerSimilarity.tsv"
     out_cluster_tsv = f"{Step2_OutDir}/{prefix}NSC.ClusterInfo.tsv"
-
-
-
 
 
     # Output the NSC updated Presence/Absence matrix (Step #1 & #2)
