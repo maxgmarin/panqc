@@ -39,7 +39,7 @@ def _nrc_cli(args):
                                                         min_seq_id)
     
     # 3) Print the general QC Stats 
-    AsmSeqCheck_Stats = get_AsmSeqCheck_QCStats(Gene_PresAbs_WiAsmSeqCheck_DF, print_stats=False)
+    ASC_Stats_DF = get_AsmSeqCheck_QCStatsDF(Gene_PresAbs_WiAsmSeqCheck_DF, print_stats=False)
 
     # 4) Run all vs all comparison of sequence k-mer profiles
     PG_AvA_DF = ava(input_PG_Ref_FA, kmer_size)
@@ -54,28 +54,55 @@ def _nrc_cli(args):
 
     # 4) Output files to the results directory
 
-    # Create the target directory
+    Step1_OutDir = f"{results_dir}/Step1_AsmSeqCheck"
+    Step2_OutDir = f"{results_dir}/Step2_DNASimilarityClustering"
+
+    # Create the target directories
     os.makedirs(results_dir, exist_ok=True)
+    os.makedirs(Step1_OutDir, exist_ok=True)
+    os.makedirs(Step2_OutDir, exist_ok=True)
+
 
     # Define path to all output directories
     if prefix != "": prefix = prefix + "."
 
-    output_AvA_TSV = f"{results_dir}/{prefix}AllVsAll.KmerSimilarity.tsv"
-    out_nsc_gene_matrix_TSV = f"{results_dir}/{prefix}gene_presence_absence.NRC.csv"
-    out_cluster_tsv = f"{results_dir}/{prefix}NSC.ClusterInfo.tsv"
+    out_nsc_gene_matrix_TSV = f"{results_dir}/{prefix}gene_presence_absence.NRCUpdated.tsv"
+    out_asc_gene_matrix_TSV = f"{results_dir}/{prefix}gene_presence_absence.AsmSeqCheck.tsv"
+
+    out_ASC_Summ_TSV = f"{Step1_OutDir}/{prefix}AsmSeqCheck.Summary.tsv"
+
+    output_AvA_TSV = f"{Step2_OutDir}/{prefix}AllVsAll.KmerSimilarity.tsv"
+    out_cluster_tsv = f"{Step2_OutDir}/{prefix}NSC.ClusterInfo.tsv"
+
+
+
+
+
+    # Output the NSC updated Presence/Absence matrix (Step #1 & #2)
+    print(f" Saving the adjusted gene presence/absence matrix to: {out_nsc_gene_matrix_TSV}")
+    PresAbs_NSC_DF.to_csv(out_nsc_gene_matrix_TSV,
+                          sep = "\t", index = False)
+
+    # Output the ASC updated Presence/Absence matrix (Step #1)
+    #print(f" Saving the intermediate (After Assembly Seq Check Step) adjusted gene presence/absence matrix to: {out_asc_gene_matrix_TSV}")
+    Gene_PresAbs_WiAsmSeqCheck_DF.to_csv(out_asc_gene_matrix_TSV,
+                          sep = "\t", index = False)
+
+    # output the AsmSeqCheck Summary
+    ASC_Stats_DF.to_csv(out_ASC_Summ_TSV, sep = "\t", index = False)
 
     ## Output the AvA comparison table
     print(f"Saving the All vs All comparison table (TSV) to: {output_AvA_TSV}")
     PG_AvA_DF.to_csv(output_AvA_TSV, sep = "\t", index = False)
 
-    # Output the NSC updated Presence/Absence matrix
-    print(f" Saving the adjusted gene presence/absence matrix to: {out_nsc_gene_matrix_TSV}")
-    PresAbs_NSC_DF.to_csv(out_nsc_gene_matrix_TSV,
-                          sep = "\t", index = False)
-
     # Output the cluster info table
+    print(f"Saving info for all identified nucleotide similarity clusters (TSV) to: {out_cluster_tsv}")
+
     ClusterInfo_DF.to_csv(out_cluster_tsv,
                           sep = "\t", index = False)
+
+
+
 
 
 
