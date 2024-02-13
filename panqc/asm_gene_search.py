@@ -411,10 +411,10 @@ def get_AsmSeqCheck_QCStatsDF(i_Gene_PresAbs_DF): # i_SampleIDs
 
     N_AnyType_AbsentCDS = (i_Gene_PresAbs_DF[i_SampleIDs] != 1).sum().sum()  
 
-    AsmSeqCheck_Stats = (N_AbsentCDS, N_PresentCDS, N_AbsentCDS_DNASeq_InAsm, N_AnyType_AbsentCDS)
+    AsmSeqCheck_Stats = (N_AnyType_AbsentCDS, N_PresentCDS, N_AbsentCDS, N_AbsentCDS_DNASeq_InAsm)
 
     ASC_Stats_DF = pd.DataFrame([AsmSeqCheck_Stats])
-    ASC_Stats_DF.columns = ["N_Absent_Total", "N_Present", "N_Absent_PresentInDNA", "N_Absent_AbsentInDNA"]
+    ASC_Stats_DF.columns = ["N_Absent_Total", "N_Present",  "N_Absent_AbsentInDNA", "N_Absent_PresentInDNA",]
 
     return ASC_Stats_DF
 
