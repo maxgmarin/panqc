@@ -75,10 +75,9 @@ def parse_PresAbs_CSV_General(PresAbs_CSV_PATH):
 
         i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.drop(ColsToRemove, axis=1)
 
-
-            # https://stackoverflow.com/questions/12741092/pandas-dataframe-apply-function-to-all-columns
-            i_Gene_PresAbs_DF[ListOf_SampleID_Cols] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].applymap(lambda x: 1 if isinstance(x, str) else 0)        
-            i_Gene_PresAbs_DF["NumAsm_WiGene"] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].sum(axis = 1)
+        # https://stackoverflow.com/questions/12741092/pandas-dataframe-apply-function-to-all-columns
+        i_Gene_PresAbs_DF[ListOf_SampleID_Cols] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].applymap(lambda x: 1 if isinstance(x, str) else 0)        
+        i_Gene_PresAbs_DF["NumAsm_WiGene"] = i_Gene_PresAbs_DF[ListOf_SampleID_Cols].sum(axis = 1)
 
         i_Gene_PresAbs_DF = i_Gene_PresAbs_DF.sort_values(by='NumAsm_WiGene', ascending=False)
 

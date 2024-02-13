@@ -400,8 +400,23 @@ def get_AsmSeqCheck_QCStats(i_Gene_PresAbs_DF, print_stats = True): # i_SampleID
     
     return N_AbsentCDS, N_PresentCDS, N_AbsentCDS_DNASeq_InAsm, N_AnyType_AbsentCDS
 
+def get_AsmSeqCheck_QCStatsDF(i_Gene_PresAbs_DF): # i_SampleIDs
 
+    i_SampleIDs = get_columns_excluding(i_Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
 
+    N_AbsentCDS = (i_Gene_PresAbs_DF[i_SampleIDs] == 0).sum().sum()  
+    N_PresentCDS = (i_Gene_PresAbs_DF[i_SampleIDs] == 1).sum().sum()  
+    
+    N_AbsentCDS_DNASeq_InAsm = (i_Gene_PresAbs_DF[i_SampleIDs] == 2).sum().sum()  
+
+    N_AnyType_AbsentCDS = (i_Gene_PresAbs_DF[i_SampleIDs] != 1).sum().sum()  
+
+    AsmSeqCheck_Stats = (N_AbsentCDS, N_PresentCDS, N_AbsentCDS_DNASeq_InAsm, N_AnyType_AbsentCDS)
+
+    ASC_Stats_DF = pd.DataFrame([AsmSeqCheck_Stats])
+    ASC_Stats_DF.columns = ["N_Absent_Total", "N_Present", "N_Absent_PresentInDNA", "N_Absent_AbsentInDNA"]
+
+    return ASC_Stats_DF
 
 
 
