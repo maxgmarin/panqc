@@ -1,0 +1,6 @@
+SampleID	Genome_ASM_PATH
+Genome_1	./TestSet1.Genome1.fa.gz
+Genome_2	./TestSet1.Genome2.fa.gz
+Genome_3	./TestSet1.Genome3.fa.gz
+Genome_4	./TestSet1.Genome4.fa.gz
+Genome_5	./TestSet1.Genome5.fa.gz
