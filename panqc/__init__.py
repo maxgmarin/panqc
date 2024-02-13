@@ -11,7 +11,7 @@ from ._version import __version__
 
 from .ava import ava
 from .nscluster import clusterBy_KmerJC
-from .asm_gene_search import asmseqcheck_frompaths, get_AsmSeqCheck_QCStats
+from .asm_gene_search import asmseqcheck_frompaths, get_AsmSeqCheck_QCStats, get_AsmSeqCheck_QCStatsDF
 
 import pandas as pd
 
