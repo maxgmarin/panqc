@@ -6,7 +6,7 @@
 [![DOI]()]()
 --->
 
-A toolkit for evaluating nucleotide redundancy in pan-genome analyses.
+A **pan**-genome **q**uality **c**ontrol toolkit for evaluating nucleotide redundancy in pan-genome analyses. 
 
 <!---
 > TBD Reference
@@ -20,6 +20,7 @@ A toolkit for evaluating nucleotide redundancy in pan-genome analyses.
   - [Build locally](#build-locally)
 - [Basic usage](#basic-usage)
 - [Full usage](#full-usage)
+  - [`nrc`](#panqc-nrc)
   - [`asmseqcheck`](#asmseqcheck)
   - [`ava`](#ava)
   - [`nscluster`](#nscluster)
@@ -38,10 +39,7 @@ The Nucleotide Redundancy Correction (PGQC-NRC) pipeline adjusts for redundancy 
 --->
 
 ## Installation
-### Build locally
->🚧 Check back soon 🚧
-
-### `pip`
+### Install locally
 Currently, `panqc` can be installed by cloning this repository and installing with `pip`.
 
 ```
@@ -52,107 +50,80 @@ cd pgqc
 pip install . 
 ```
 
+### `pip`
+>🚧 Check back soon 🚧
+
 ### `conda`
 >🚧 Check back soon 🚧
 
 ## Basic usage
->🚧 Check back soon 🚧
+
+```
+panqc nrc -a InputAsmPaths.tsv -r pan_genome_reference.fa -m gene_presence_absence.csv -o NRC_results/
+```
+
+The above command will output an adjusted gene presence absence matrix along with additional statistics to the specified output directory (`NRC_results/`).
+
+For more details on the above options, and additional options, see below.
+
 
 ## Full usage
-`panqc` has 3 sub-commands:
-- `asmseqcheck` - Perform alignment of all absent genes to all assemblies used in a pan-genome analysis.
-- `ava` - Perform all vs all comparison of k-mer profile of all gene sequences of a pan-genome.
-- `nscluster` - Perform nucleotide similarity clustering of pan-genome.
+
+`panqc` has 2 sub-commands:
+- `nrc` - Run the full **N**ucleotide **R**edundancy **C**orrection pipeline on a pan-genome analyses.
+- `utils` - Run utlity scripts and sub-pipelines of the full NRC pipeline
 
 ---
 
-### `asmseqcheck`
-Perform alignment of all absent genes to all assemblies used in a pan-genome analysis. 
+### `panqc nrc`
 
-#### Usage:
+Run the complete Bucleotide Redundancy Correction pipeline
+
 ```
-pgqc asmseqcheck [-h] -a <tsv> -r <fasta> -m <csv> -o <csv> [-c <0-1>] [-i <0-1>]
-```
-#### Input:
-This software takes three files:
-- The paths to the input assemblies
-- Pan-genome nucleotide reference
-- Pan-genome gene presence/absence matrix
+$ panqc nrc --help
 
-#### Output:
-The output (`-o`) is a pan-genome gene presence/absence matrix with updated gene presence/absence calls.
-The calls are as follows:
-- `0`: 
-- `1`: 
-- `2`: Similar gene sequence is present at the nucleotide level.
+usage: panqc nrc [-h] -a PathToAsms.tsv -r pan_genome_reference.fasta -m gene_presence_absence.csv -o RESULTS_DIR [-p PREFIX] [-c MIN_QUERY_COV] [-i MIN_SEQ_ID] [-k KMER_SIZE] [-t MIN_KSIM]
 
-#### Required arguments:
+optional arguments:
+  -h, --help            show this help message and exit
 
-##### `-a`, `--in_assemblies`
-File with the paths to input assemblies. (`tsv`)
+  -a, --asms PathToAsms.tsv
+                        Table with SampleID & Paths to each input assemblies. (TSV)
 
-##### `-r`, `--in_pg_ref`
-Input pan-genome nucleotide reference. (`fasta`)
-> Typically output as `pan_genome_reference.fasta` by Panaroo/Roary.
+  -r, --pg-ref pan_genome_reference.fasta
+                        Input pan-genome nucleotide reference. Typically output as `pan_genome_reference.fasta` by Panaroo/Roary (FASTA)
 
-##### `-m`, `--in_gene_matrix`
-Input pan-genome gene presence/absence matrix. (`cvs`)
-> Typically output as `gene_presence_absence.csv` by Panaroo/Roary.
+  -m, --gene_matrix gene_presence_absence.csv
+                        Input pan-genome gene presence/absence matrix. Typically output as `gene_presence_absence.csv` by Panaroo/Roary (CSV)
 
-##### `-o`, `--out_gene_matrix_wi_geneseqcheck`
-Output pan-genome gene presence/absence matrix with updated gene presence/absence calls. (`cvs`)
+  -o, --results_dir RESULTS_DIR
+                        Output directory for analysis results.
 
-#### Optional arguments:
+  -p, --prefix PREFIX
+                        Prefix to append to output files
 
-#### `-c`, `--min_query_cov`
-Minimum query coverage to classify a gene as present within an assembly (0-1)
+  -c, --min-query-cov MIN_QUERY_COV
+                        Minimum query coverage (ranging from 0 to 1) to classify a gene as present within an assembly (Default: 0.9)
 
-#### `-i`, `--min_seq_id` 
-Minimum sequence identity to classify a gene as present within an assembly (0-1)
+  -i, --min-seq-id MIN_SEQ_ID
+                        Minimum sequence identity (ranging from 0 to 1) to classify a gene as present within an assembly (Default: 0.9)
 
----
+  -k, --kmer_size KMER_SIZE
+                        k-mer size (bp) to use for generating profile of unique k-mers for each sequence (Default: 31))
 
-### `ava`
-Perform all vs all comparison of k-mer profile of all gene sequences of a pan-genome.
-
-#### Usage:
-```
-pgqc ava [-h] -i <fasta> -o <tsv> [-k <int>]
+  -t, --min-ksim MIN_KSIM
+                        Minimum k-mer similarity (maximum jaccard containment of k-mers between pair of sequences) to cluster sequences into the same "nucleotide similarity cluster" (Default: 0.8))
 ```
 
-### Output:
 
+### `panqc utils` full usage 
 
-#### Required arguments:
-#####  `-i`, `--in_pg_ref`
-Input Panaroo pan-genome nucleotide reference. Typically output as `pan_genome_reference.fasta` by Panaroo (FASTA)
-#####  `-o`, `--out_ava_tsv`
-All vs all comparison of sequence k-mer profiles. (TSV)
-#### Optional arguments:
-#####  `-k`, `--kmer_size`
-k-mer size (bp) to use for generating profile of unique k-mers for each sequence (Default: 31))
+Within `utils` there are 3 sub-commands that run specific components of the NRC pipeline:
+- `utils asmseqcheck` - Perform alignment of all genes classified as absent to their respective assemblies.
+- `utils ava` - Perform all vs all comparison of k-mer profiles of input sequences. 
+- `utils nscluster` - Perform nucleotide similarity clustering and readjust pan-genome estimates.
 
-
-#### `nscluster`
-Perform nucleotide similarity clustering of pan-genome.
-#### Usage:
-```
-pgqc nscluster [-h] -a <tsv> -m <csv> [--min_ksim <0-1>] -o <tsv> -c <tsv>
-```
-#### Required arguments:
-##### `-a`, `--in_ava_tsv`
-Input table with all vs all comparison of sequence k-mer profiles. (TSV)
-##### ` -m`, `--in_gene_matrix_tsv`
-Input pan-genome gene presence/absence matrix (CSV). NOTE: 2 reflects that similar gene sequence is present at the nucleotide level (CSV)
-##### `-o`, `--out_nsc_gene_matrix`
-Nucleotide Similarity Cluster adjusted Gene Presence Matrix (TSV/Rtab)
-##### `-c`, `--out_clusterinfo_tsv`
-Summary table with all genes that belong to a NSC (Nucleotide Similarity Cluster) (TSV)
-
-#### Optional arguments:
-##### ` --min_ksim`
-Minimum k-mer similarity (maximum Jaccard Similarity of k-mers between pair of sequences) to cluster sequences into the same "nucleotide similarity cluster" (Default: 0.8))
-
+>🚧 Check back soon for full usage for NRC sub-pipelines 🚧
 
 ## Contributing and Issues
 >🚧 Check back soon 🚧
