@@ -1,6 +1,6 @@
 import pytest
 
-from pgqc.kmerlib import build_kmers
+from panqc.kmerlib import build_kmers
 
 @pytest.mark.parametrize("sequence,size,expected", [
 	("ATCG", 3, ["ATC", "TCG"]),
