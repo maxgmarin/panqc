@@ -4,8 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "panqc"
-description = "Package for analysis of nucleotide redundancy within CDS-based pan-genome analyses"
-version = "0.0.0"
+description = "Package & software for analysis of nucleotide redundancy within CDS-based pan-genome analyses"
+readme = "README.md"
+version = "0.0.2"
 authors = [
     { name = "Maximillian Marin", email = "maximilliangmarin@gmail.com" }
 ]
