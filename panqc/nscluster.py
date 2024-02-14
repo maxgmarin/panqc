@@ -6,7 +6,7 @@ import numpy as np
 
 import time 
 
-from pgqc.utils import get_columns_excluding
+from .utils import get_columns_excluding
 
 
 #import logging

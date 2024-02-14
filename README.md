@@ -51,7 +51,9 @@ pip install .
 ```
 
 ### `pip`
->🚧 Check back soon 🚧
+```
+pip install panqc
+```
 
 ### `conda`
 >🚧 Check back soon 🚧

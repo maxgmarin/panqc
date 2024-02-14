@@ -20,7 +20,7 @@ def ava(input_PG_Ref_FA, kmer_size):
 
     end = time.time()
     time_diff = end - start
-    print(f"Time to parse and hash all k-mers: {round(time_diff, 2)} seconds")
+    print(f"Time to parse and hash all k-mers: {round(time_diff, 2)} seconds \n")
 
 
     ## Calculate the maximum Jaccard Containment (JC) between all pairs of sequences.
@@ -33,6 +33,6 @@ def ava(input_PG_Ref_FA, kmer_size):
 
     end = time.time()
     time_diff = end - start
-    print(f"Time for all vs all comparison of k-mer profiles: {round(time_diff, 2)} seconds")
+    print(f"Time for all vs all comparison of k-mer profiles: {round(time_diff, 2)} seconds \n")
     
     return PG_AvA_DF

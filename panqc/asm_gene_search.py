@@ -10,7 +10,7 @@ from tqdm import tqdm
 # Set the logging level to INFO
 #logging.basicConfig(level=logging.INFO)
 
-from pgqc.utils import parse_PresAbs_CSV_General, get_columns_excluding, parse_PG_Ref_FA
+from .utils import parse_PresAbs_CSV_General, get_columns_excluding, parse_PG_Ref_FA
 
 
 #### Define function for parsing Mappy alignment hits

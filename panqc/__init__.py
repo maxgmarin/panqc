@@ -76,7 +76,7 @@ def _nrc_cli(args):
 
 
     # Output the NSC updated Presence/Absence matrix (Step #1 & #2)
-    print(f" Saving the adjusted gene presence/absence matrix to: {out_nsc_gene_matrix_TSV}")
+    print(f"Saving the adjusted gene presence/absence matrix to: {out_nsc_gene_matrix_TSV} \n")
     PresAbs_NSC_DF.to_csv(out_nsc_gene_matrix_TSV,
                           sep = "\t", index = False)
 
@@ -89,11 +89,11 @@ def _nrc_cli(args):
     ASC_Stats_DF.to_csv(out_ASC_Summ_TSV, sep = "\t", index = False)
 
     ## Output the AvA comparison table
-    print(f"Saving the All vs All comparison table (TSV) to: {output_AvA_TSV}")
+    print(f"Saving the All vs All comparison table (TSV) to: {output_AvA_TSV} \n")
     PG_AvA_DF.to_csv(output_AvA_TSV, sep = "\t", index = False)
 
     # Output the cluster info table
-    print(f"Saving info for all identified nucleotide similarity clusters (TSV) to: {out_cluster_tsv}")
+    print(f"Saving info for all identified nucleotide similarity clusters (TSV) to: {out_cluster_tsv} \n")
 
     ClusterInfo_DF.to_csv(out_cluster_tsv,
                           sep = "\t", index = False)
