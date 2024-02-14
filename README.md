@@ -64,11 +64,9 @@ panqc nrc -a InputAsmPaths.tsv -r pan_genome_reference.fa -m gene_presence_absen
 
 The above command will output an adjusted gene presence absence matrix along with additional statistics to the specified output directory (`NRC_results/`).
 
-For more details on the above options, and additional options, see below.
-
 ### Analyzing included test data set
 
-If you wish to run an `panqc nrc` on an artifical and abridged test data set, you can simply run the following commands:
+If you wish to run an `panqc nrc` on an artifical (and abridged) test data set, you can run the following commands:
 
 ```
 cd tests/data
@@ -86,7 +84,7 @@ Asm_TSV="TestSet1.InputAsmPaths.tsv"
 
 time panqc nrc -a ${Asm_TSV} -r ${PG_Ref_FA} -m ${PG_Matrix_CSV} -o test_results/
 ```
-NOTE: Make sure that your current working directory (CWD) is `tests/data` within the repository. The `TestSet1.InputAsmPaths.tsv` describes the path to each genome assembly relative to your CWD
+NOTE: Make sure that your current working directory (CWD) is `tests/data` within the repository. The `TestSet1.InputAsmPaths.tsv` file describes the path to each genome assembly relative to your CWD.
 
 
 ## Full usage
