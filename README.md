@@ -16,14 +16,14 @@ A **pan**-genome **q**uality **c**ontrol toolkit for evaluating nucleotide redun
 ## Table of Contents
 - [Motivation](#motivation)
 - [Installation](#installation)
+  - [Install locally](#install-locally)
+  - [`pip`](#pip)
   - [`conda`](#conda)
-  - [Build locally](#build-locally)
+
 - [Basic usage](#basic-usage)
 - [Full usage](#full-usage)
   - [`nrc`](#panqc-nrc)
-  - [`asmseqcheck`](#asmseqcheck)
-  - [`ava`](#ava)
-  - [`nscluster`](#nscluster)
+  - [`utils`](#panqc-utils)
 - [Contributing and Issues](#contributing-and-issues)
 - [Citing](#citing)
 
@@ -77,7 +77,7 @@ For more details on the above options, and additional options, see below.
 
 ### `panqc nrc`
 
-Run the complete Bucleotide Redundancy Correction pipeline
+Run the complete Nucleotide Redundancy Correction pipeline
 
 ```
 $ panqc nrc --help
@@ -116,14 +116,31 @@ optional arguments:
 ```
 
 
-### `panqc utils` full usage 
+### `panqc utils`
 
 Within `utils` there are 3 sub-commands that run specific components of the NRC pipeline:
 - `utils asmseqcheck` - Perform alignment of all genes classified as absent to their respective assemblies.
 - `utils ava` - Perform all vs all comparison of k-mer profiles of input sequences. 
 - `utils nscluster` - Perform nucleotide similarity clustering and readjust pan-genome estimates.
 
->🚧 Check back soon for full usage for NRC sub-pipelines 🚧
+```
+$ panqc utils --help
+
+usage: panqc utils [-h] {asmseqcheck,ava,nscluster} ...
+
+positional arguments:
+  {asmseqcheck,ava,nscluster}
+                        Please select one of the utilility pipelines of the panqc toolkit.
+    asmseqcheck
+    ava
+    nscluster
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+```
+
+>🚧 Check back soon for full usage for each of the utility sub-pipelines of the NRC pipeline 🚧
 
 ## Contributing and Issues
 >🚧 Check back soon 🚧
