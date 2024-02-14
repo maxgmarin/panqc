@@ -19,8 +19,8 @@ A **pan**-genome **q**uality **c**ontrol toolkit for evaluating nucleotide redun
   - [Install locally](#install-locally)
   - [`pip`](#pip)
   - [`conda`](#conda)
-
 - [Basic usage](#basic-usage)
+  - [Analyzing included test data set](#analyzing-included-test-data-set)
 - [Full usage](#full-usage)
   - [`nrc`](#panqc-nrc)
   - [`utils`](#panqc-utils)
@@ -65,6 +65,28 @@ panqc nrc -a InputAsmPaths.tsv -r pan_genome_reference.fa -m gene_presence_absen
 The above command will output an adjusted gene presence absence matrix along with additional statistics to the specified output directory (`NRC_results/`).
 
 For more details on the above options, and additional options, see below.
+
+### Analyzing included test data set
+
+If you wish to run an `panqc nrc` on an artifical and abridged test data set, you can simply run the following commands:
+
+```
+cd tests/data
+
+# Define path to the 3 needed input files:
+
+# 1) Gene presence absence matrix (As output by Panaroo or Roary)
+PG_Matrix_CSV="TestSet1.gene_presence_absence.csv"
+
+# 2) Pan-genome nucleotide reference (As output by Panaroo or Roary)
+PG_Ref_FA="TestSet1.pan_genome_reference.fa.gz"
+
+# 3) SampleID + Path for all assemblies used in analysis
+Asm_TSV="TestSet1.InputAsmPaths.tsv"
+
+time panqc nrc -a ${Asm_TSV} -r ${PG_Ref_FA} -m ${PG_Matrix_CSV} -o test_results/
+```
+NOTE: Make sure that your current working directory (CWD) is `tests/data` within the repository. The `TestSet1.InputAsmPaths.tsv` describes the path to each genome assembly relative to your CWD
 
 
 ## Full usage
