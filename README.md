@@ -1,6 +1,7 @@
 <img width="500" src="https://github.com/maxgmarin/panqc/raw/main/Images/panqc.logo.png" alt="panqc logo">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Static Badge](https://img.shields.io/badge/language-Python_3-blue)
 <!---[![Build Status]()]()
 [![github release version]()]()
 [![DOI]()]()
