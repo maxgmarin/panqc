@@ -40,24 +40,26 @@ The Nucleotide Redundancy Correction (NRC) pipeline adjusts for redundancy at th
 --->
 
 ## Installation
-### Install locally
-Currently, `panqc` can be installed by cloning this repository and installing with `pip`.
-
-```
-git clone git@github.com:maxgmarin/pgqc.git
-
-cd pgqc
-
-pip install . 
-```
-
 ### `pip`
 ```
 pip install panqc
 ```
 
+### Install locally
+Currently, `panqc` can be installed by cloning this repository and installing with `pip`.
+```
+git clone git@github.com:maxgmarin/panqc.git
+
+cd panqc
+
+pip install . 
+```
+
 ### `conda`
 >🚧 Check back soon 🚧
+
+
+
 
 ## Basic usage
 
