@@ -41,7 +41,33 @@ def parse_AlnHits_To_DF(i_AsmAlner, QuerySeq):
 
 ######################################################
 
+def check_NumAlnHits(i_AsmAlner, QuerySeq, MinQueryLenFraction, MinSeqID):
+    """
+    Check alignment hits for a given query sequence against an assembly aligner, considering minimum query length fraction and sequence identity thresholds.
+    
+    Args:
+    - i_AsmAlner: An assembly aligner object for mapping sequences.
+    - QuerySeq: The query sequence to map.
+    - MinQueryLenFraction: Minimum fraction of the query that must align to consider a hit.
+    - MinSeqID: Minimum sequence identity (SeqID) threshold to consider a hit.
+    
+    Returns:
+    - Num_Hits_Pass: The number of hits that pass the defined thresholds.
+    """
 
+    Num_Hits_Pass = 0  # Initialize the count of passing hits
+    totalQueryLen = len(QuerySeq)  # Total length of the query sequence
+
+    for hit in i_AsmAlner.map(QuerySeq, cs=True):
+        SeqID = hit.mlen / hit.blen  # Calculate sequence identity
+        LenQueryAligned = (hit.q_en - hit.q_st) / totalQueryLen  # Calculate the fraction of the query that is aligned
+
+        # Check if the hit passes the minimum length fraction and sequence identity thresholds
+        if LenQueryAligned >= MinQueryLenFraction and SeqID >= MinSeqID:
+            Num_Hits_Pass += 1
+            break  # Stop processing as we only need to know if any hit passes
+
+    return Num_Hits_Pass
 
 
 
@@ -117,6 +143,83 @@ def PresAbsQC_CheckAsmForGeneSeq(i_Gene_PresAbs_DF, i_PG_Ref_NucSeqs,
     return i_Gene_PresAbs_DF_Updated
 
 
+
+def PresAbsQC_CheckAsmForGeneSeq_V2(i_Gene_PresAbs_DF, i_PG_Ref_NucSeqs,
+                                 i_AsmFA_Dict, i_SampleIDs,
+                                 MinQueryCov = 0.9, MinQuerySeqID = 0.9):
+    """
+    This function takes in i) a gene presence/absence dataframe,
+                           ii) a dictionary of protein-coding gene reference sequences,
+                           iii) a dictionary of sample-specific genome assemblies,
+                           iv) a list of sample IDs,
+                           and optional parameters
+                           v) for minimum query coverage
+                           vi) and minimum query sequence identity. 
+                           
+    It searches the genome assemblies for each absent gene in each sample,
+    and updates the gene presence/absence dataframe accordingly. 
+    If a gene sequence is found with high confidence, the gene is marked as "not present" at the protein level but "present" at the DNA level.
+    The function returns the updated gene presence/absence dataframe.
+
+    Args:
+    - i_Gene_PresAbs_DF: pandas DataFrame containing gene presence/absence information for each sample. The DataFrame should have the following columns: "Gene" (gene name), "NumTotalGenomes" (total number of genomes), and one column for each sample ID containing 0 (absent) or 1 (present) to indicate gene presence/absence.
+    - i_PG_Ref_NucSeqs: dictionary of protein-coding gene reference sequences. The keys are gene names and the values are nucleotide sequences.
+    - i_AsmFA_Dict: dictionary of sample-specific genome assemblies. The keys are sample IDs and the values are file paths to the genome assembly FASTA files.
+    - i_SampleIDs: list of sample IDs to process.
+    - MinQueryCov: optional float specifying the minimum query coverage required for a gene sequence alignment to be considered a hit. Default is 0.9.
+    - MinQuerySeqID: optional float specifying the minimum query sequence identity required for a gene sequence alignment to be considered a hit. Default is 0.9.
+
+    Returns:
+    - i_Gene_PresAbs_DF_Updated: pandas DataFrame containing updated gene presence/absence information for each sample. The DataFrame has the same columns as i_Gene_PresAbs_DF, plus an additional column "NumAsm_WiGene_DNASeq" containing the number of samples in which the gene sequence was found with high confidence.
+
+    """
+
+    # Assert that sequence IDs (gene names) are identical between the gene presence CSV & the pan-enome reference fasta
+    PG_Ref_SeqIDs_Set = set(sorted(list(i_PG_Ref_NucSeqs.keys())))
+    PresMatrix_SeqIDs_Set = set(list(i_Gene_PresAbs_DF.index))
+    
+    ErrorMessage = "ERROR: The geneIDs in the gene presence/absence matrix does not match the provided nucleotide reference FASTA."
+    assert PG_Ref_SeqIDs_Set == PresMatrix_SeqIDs_Set, ErrorMessage
+
+    i_Gene_PresAbs_DF_Updated = i_Gene_PresAbs_DF.copy().set_index("Gene", drop=False)
+    
+    for i_SampleID in tqdm(i_SampleIDs):
+        i_Asm_FA_PATH = i_AsmFA_Dict[i_SampleID]
+
+        i_Alner_Asm = mp.Aligner(i_Asm_FA_PATH, preset="asm10")  # load or build index
+        if not i_Alner_Asm: raise Exception(f"ERROR: failed to load/build index for Asm - {i_SampleID} - {i_Asm_FA_PATH}")
+        
+        i_SampleOnly_GenePres = i_Gene_PresAbs_DF.set_index("Gene")[i_SampleID]
+        
+        i_AbsentGenes = i_SampleOnly_GenePres[i_SampleOnly_GenePres == 0].index
+        
+        for gene in i_AbsentGenes:
+        
+            Num_Hits_Pass = check_NumAlnHits(i_Alner_Asm,
+                                             i_PG_Ref_NucSeqs[gene],
+                                             MinQueryCov,
+                                             MinQuerySeqID)
+            
+            if Num_Hits_Pass > 0: # Update Pres/Abs matrix to have 2, meaning that the Protein-level annotation is Not present, BUT the gene sequence can be found with high confidence.
+                i_Gene_PresAbs_DF_Updated.loc[gene, i_SampleID] = 2
+
+    i_Gene_PresAbs_DF_Updated["NumAsm_WiGene_DNASeq"] = i_Gene_PresAbs_DF_Updated[i_SampleIDs].applymap(lambda x: 1 if x > 0 else 0).sum(axis = 1)
+
+    return i_Gene_PresAbs_DF_Updated
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def create_AsmFA_PATH_Dict(i_AsmFA_TSV):
     AsmFA_DF = pd.read_csv(i_AsmFA_TSV, sep="\t")
     AsmFA_Dict = dict(AsmFA_DF[['SampleID', 'Genome_ASM_PATH']].values)
@@ -176,9 +279,15 @@ def asmseqcheck_frompaths(i_Gene_PresAbs_CSV_PATH,
     # 4) Run alignments to check for gene sequences in assemblies
     print("Running alignments to check for gene sequences in assemblies...")
 
-    Gene_PresAbs_WiAsmSeqCheck_DF = PresAbsQC_CheckAsmForGeneSeq(Gene_PresAbs_DF, PG_Ref_NucSeqs,
-                                                                AsmFA_Dict, i_SampleIDs,
-                                                                MinQueryCov, MinQuerySeqID)
+    # Gene_PresAbs_WiAsmSeqCheck_DF = PresAbsQC_CheckAsmForGeneSeq(Gene_PresAbs_DF, PG_Ref_NucSeqs,
+    #                                                             AsmFA_Dict, i_SampleIDs,
+    #                                                             MinQueryCov, MinQuerySeqID)
+
+    Gene_PresAbs_WiAsmSeqCheck_DF = PresAbsQC_CheckAsmForGeneSeq_V2(Gene_PresAbs_DF, PG_Ref_NucSeqs,
+                                                                 AsmFA_Dict, i_SampleIDs,
+                                                                 MinQueryCov, MinQuerySeqID)
+
+
 
     print("Finished searching for gene sequences in assemblies \n")
 
