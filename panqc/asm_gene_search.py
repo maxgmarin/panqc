@@ -89,10 +89,11 @@ def PresAbsQC_CheckAsmForGeneSeq(i_Gene_PresAbs_DF, i_PG_Ref_NucSeqs,
 
     i_Gene_PresAbs_DF_Updated = i_Gene_PresAbs_DF.copy().set_index("Gene", drop=False)
     
-    for i_SampleID in tqdm(i_SampleIDs) :
+    for i_SampleID in tqdm(i_SampleIDs):
+        i_Asm_FA_PATH = i_AsmFA_Dict[i_SampleID]
 
-        i_Alner_Asm = mp.Aligner(i_AsmFA_Dict[i_SampleID], preset="asm10")  # load or build index
-        if not i_Alner_Asm: raise Exception(f"ERROR: failed to load/build index for SR Asm - {i_SampleID}")
+        i_Alner_Asm = mp.Aligner(i_Asm_FA_PATH, preset="asm10")  # load or build index
+        if not i_Alner_Asm: raise Exception(f"ERROR: failed to load/build index for Asm - {i_SampleID} - {i_Asm_FA_PATH}")
         
         i_SampleOnly_GenePres = i_Gene_PresAbs_DF.set_index("Gene")[i_SampleID]
         
