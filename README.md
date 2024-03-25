@@ -32,7 +32,7 @@ A **pan**-genome **q**uality **c**ontrol toolkit for evaluating nucleotide redun
 ## Motivation
 ![PanQC_NRC_Diagram](https://github.com/maxgmarin/panqc/raw/main/Images/PanQC_NRC_Diagram.png)
 
-The Nucleotide Redundancy Correction (NRC) pipeline adjusts for redundancy at the DNA level in two steps (Methods). In step one, all genes predicted to be absent at the Amino Acid (AA) level are compared to their corresponding assembly at the nucleotide level. In cases where the nucleotide sequence is found with high coverage and sequence identity (Query Coverage & Sequence Identity > 90%), the gene is marked as “present at the DNA level”. Next, all genes are clustered and merged using a k-mer based metric of nucleotide similarity. Cases where two or more genes are divergent at the AA level but highly similar at the nucleotide level will be merged into a single “nucleotide similarity gene cluster”. After applying this method the pan-genome gene presence matrix is readjusted according to these results.
+The panqc Nucleotide Redundancy Correction (NRC) pipeline adjusts for redundancy at the DNA level within pan-genome estimates in two steps. In step one, all genes predicted to be absent at the Amino Acid (AA) level are compared to their corresponding assembly at the nucleotide level. In cases where the nucleotide sequence is found with high coverage and sequence identity (Query Coverage & Sequence Identity > 90%), the gene is marked as “present at the DNA level”. Next, all genes are clustered and merged using a k-mer based metric of nucleotide similarity. Cases where two or more genes are divergent at the AA level but highly similar at the nucleotide level will be merged into a single “nucleotide similarity gene cluster”. After applying this method the pan-genome gene presence matrix is readjusted according to these results.
 
 <!---
 **When to use this software**:
@@ -95,14 +95,14 @@ NOTE: Make sure that your current working directory (CWD) is `tests/data` within
 ## Full usage
 
 `panqc` has 2 sub-commands:
-- `nrc` - Run the full **N**ucleotide **R**edundancy **C**orrection pipeline on a pan-genome analyses.
-- `utils` - Run utlity scripts and sub-pipelines of the full NRC pipeline
+- `nrc` - Run the full panqc **N**ucleotide **R**edundancy **C**orrection pipeline on a pan-genome analyses.
+- `utils` - Run utlity scripts and sub-pipelines of the full panqc NRC pipeline
 
 ---
 
 ### `panqc nrc`
 
-Run the complete Nucleotide Redundancy Correction pipeline
+Run the complete panqc Nucleotide Redundancy Correction (NRC) pipeline
 
 ```
 $ panqc nrc --help
@@ -143,7 +143,7 @@ optional arguments:
 
 ### `panqc utils`
 
-Within `utils` there are 3 sub-commands that run specific components of the NRC pipeline:
+Within `utils` there are 3 sub-commands that run specific components of the panqc NRC pipeline:
 - `utils asmseqcheck` - Perform alignment of all genes classified as absent to their respective assemblies.
 - `utils ava` - Perform all vs all comparison of k-mer profiles of input sequences. 
 - `utils nscluster` - Perform nucleotide similarity clustering and readjust pan-genome estimates.
@@ -165,13 +165,17 @@ optional arguments:
 
 ```
 
->🚧 Check back soon for full usage for each of the utility sub-pipelines of the NRC pipeline 🚧
+>🚧 Check back soon for full usage for each of the utility sub-pipelines of the panqc toolkit 🚧
+
 
 ## Contributing and Issues
 >🚧 Check back soon 🚧
 
+
+
 ## Citing
 >🚧 Check back soon 🚧
+
 
 <!---
 If you use `panqc` in your work, please cite:
