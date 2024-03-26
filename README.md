@@ -69,6 +69,13 @@ panqc nrc -a InputAsmPaths.tsv -r pan_genome_reference.fa -m gene_presence_absen
 
 The above command will output an adjusted gene presence absence matrix along with additional statistics to the specified output directory (`NRC_results/`).
 
+
+Alternatively, if you would like to use a `gene_presence_absence.Rtab` file instead of a CSV matrix of gene presence, use add the `--is-rtab` flag.
+
+```
+panqc nrc -a InputAsmPaths.tsv -r pan_genome_reference.fa -m gene_presence_absence.Rtab --is-rtab -o NRC_results/
+```
+
 ### Analyzing included test data set
 
 If you wish to run an `panqc nrc` on an artifical (and abridged) test data set, you can run the following commands:
@@ -119,7 +126,7 @@ optional arguments:
                         Input pan-genome nucleotide reference. Typically output as `pan_genome_reference.fasta` by Panaroo/Roary (FASTA)
 
   -m, --gene_matrix gene_presence_absence.csv
-                        Input pan-genome gene presence/absence matrix. Typically output as `gene_presence_absence.csv` by Panaroo/Roary (CSV)
+                        Input pan-genome gene presence/absence matrix. By default is assumed to be a `gene_presence_absence.csv` output by Panaroo/Roary (CSV) If the user provides the --is-rtab flag, the input is assumed to be an .Rtab (TSV)file.
 
   -o, --results_dir RESULTS_DIR
                         Output directory for analysis results.
@@ -138,6 +145,7 @@ optional arguments:
 
   -t, --min-ksim MIN_KSIM
                         Minimum k-mer similarity (maximum jaccard containment of k-mers between pair of sequences) to cluster sequences into the same "nucleotide similarity cluster" (Default: 0.8))
+  --is-rtab             Flag indicating that the input gene matrix is a tab-delimited .Rtab file
 ```
 
 
@@ -164,6 +172,7 @@ optional arguments:
   -h, --help            show this help message and exit
 
 ```
+
 
 >🚧 Check back soon for full usage for each of the utility sub-pipelines of the panqc toolkit 🚧
 

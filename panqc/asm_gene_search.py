@@ -10,7 +10,7 @@ from tqdm import tqdm
 # Set the logging level to INFO
 #logging.basicConfig(level=logging.INFO)
 
-from .utils import parse_PresAbs_CSV_General, get_columns_excluding, parse_PG_Ref_FA
+from .utils import parse_PresAbs_CSV_General, parse_PresAbs_Rtab, get_columns_excluding, parse_PG_Ref_FA
 
 
 #### Define function for parsing Mappy alignment hits
@@ -239,58 +239,57 @@ PresAbs_NonSampleID_ColNames = ['Gene', 'NumAsm_WiGene', 'NumAsm_WiGene_DNASeq',
                                 'Order within Fragment', 'Accessory Fragment', 'Accessory Order with Fragment', 'QC',
                                 'Min group size nuc', 'Max group size nuc', 'Avg group size nuc']
 
-def asmseqcheck_frompaths(i_Gene_PresAbs_CSV_PATH,
+def asmseqcheck_frompaths(i_Gene_PresAbs_File_PATH,
                             i_PG_Ref_FA_PATH,
                             i_AsmFA_TSV,
-                            MinQueryCov, MinQuerySeqID):
+                            MinQueryCov,
+                            MinQuerySeqID,
+                            rtab_matrix = False):
     """
     Searches for gene sequences in genome assemblies and returns a DataFrame with presence/absence information.
 
     Args:
-        i_Gene_PresAbs_CSV_PATH (str): Path to the gene presence/absence matrix CSV file.
-        i_PG_Ref_FA_PATH (str): Path to the pan-genome (nucleotide) reference fasta file.
+        i_Gene_PresAbs_File_PATH (str): Path to the gene presence/absence matrix file.
+        i_PG_Ref_FA_PATH (str): Path to the pan-genome reference fasta file.
         i_AsmFA_TSV (str): Path to the TSV file containing the genome assembly fasta file paths.
         MinQueryCov (float): Minimum query coverage required for a gene sequence to be considered present.
         MinQuerySeqID (float): Minimum query sequence identity required for a gene sequence to be considered present.
+        rtab_matrix (bool): Flag indicating whether the gene presence/absence matrix is in .Rtab format.
 
     Returns:
         pandas.DataFrame: A DataFrame with presence/absence information for each gene in each sample.
     """
 
-    # 1) Parse in Gene Pres/Abs matrix and select sampleIDs
-
+    # Parse the gene presence/absence matrix and select sampleIDs
     print("Parsing input gene presence/absence matrix...")
-    Gene_PresAbs_DF = parse_PresAbs_CSV_General(i_Gene_PresAbs_CSV_PATH)
-    
-    i_SampleIDs = get_columns_excluding(Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
+    if rtab_matrix:
+        print("   Gene presence/absence matrix being parsed as TSV (.Rtab)")
+        Gene_PresAbs_DF = parse_PresAbs_Rtab(i_Gene_PresAbs_File_PATH)
+        print("   Dimensions of parsed matrix", Gene_PresAbs_DF.shape)
+    else:
+        print("   Gene presence/absence matrix being parsed as CSV")
+        Gene_PresAbs_DF = parse_PresAbs_CSV_General(i_Gene_PresAbs_File_PATH)
+        print("   Dimensions of parsed matrix", Gene_PresAbs_DF.shape)
 
+    i_SampleIDs = get_columns_excluding(Gene_PresAbs_DF, PresAbs_NonSampleID_ColNames)
     print("Finished parsing gene presence/absence matrix\n")
 
-    # 2) Read in pan-genome (nucleotide) reference fasta
+    # Read in the pan-genome reference fasta
     print("Parsing input gene reference fasta")
     PG_Ref_NucSeqs = parse_PG_Ref_FA(i_PG_Ref_FA_PATH)
     print("Finished parsing gene reference fasta\n")
 
-    # 3) Read in genome assembly fasta PATH TSV, convert to dict
+    # Read in the genome assembly fasta PATH TSV and convert to dict
     print("Parsing TSV of input assembly PATHs")
     AsmFA_Dict = create_AsmFA_PATH_Dict(i_AsmFA_TSV)
     print("Finished parsing input assembly PATHs \n")
-    
-    # 4) Run alignments to check for gene sequences in assemblies
+
+    # Run alignments to check for gene sequences in assemblies
     print("Running alignments to check for gene sequences in assemblies...")
-
-    # Gene_PresAbs_WiAsmSeqCheck_DF = PresAbsQC_CheckAsmForGeneSeq(Gene_PresAbs_DF, PG_Ref_NucSeqs,
-    #                                                             AsmFA_Dict, i_SampleIDs,
-    #                                                             MinQueryCov, MinQuerySeqID)
-
     Gene_PresAbs_WiAsmSeqCheck_DF = PresAbsQC_CheckAsmForGeneSeq_V2(Gene_PresAbs_DF, PG_Ref_NucSeqs,
                                                                  AsmFA_Dict, i_SampleIDs,
                                                                  MinQueryCov, MinQuerySeqID)
-
-
-
     print("Finished searching for gene sequences in assemblies \n")
-
 
     return Gene_PresAbs_WiAsmSeqCheck_DF
 

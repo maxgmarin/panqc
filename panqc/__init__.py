@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ### Authors: Max Marin (maximillian_marin@hms.harvard.edu)
-# Pan-genome QC toolkit (PQGC)
+# Pan-genome QC (panqc) toolkit 
 
 
 import sys
@@ -22,21 +22,23 @@ def _nrc_cli(args):
     ## 1) Set input parameters and PATHs ####
     input_Assemblies_TSV = args.asms
     input_PG_Ref_FA = args.pg_ref
-    input_PresAbs_CSV = args.gene_matrix
+    input_PresAbs_File = args.gene_matrix
     results_dir = args.results_dir
     min_query_cov = args.min_query_cov
     min_seq_id = args.min_seq_id
     kmer_size = args.kmer_size
     ksim_cluster_thresh = args.min_ksim
     prefix = args.prefix
+    rtab_input = args.is_rtab
 
     ## 2) Run the assembly sequence check function ####
     
-    Gene_PresAbs_WiAsmSeqCheck_DF = asmseqcheck_frompaths(input_PresAbs_CSV,
-                                                        input_PG_Ref_FA,
-                                                        input_Assemblies_TSV,
-                                                        min_query_cov,
-                                                        min_seq_id)
+    Gene_PresAbs_WiAsmSeqCheck_DF = asmseqcheck_frompaths(input_PresAbs_File,
+                                                         input_PG_Ref_FA,
+                                                         input_Assemblies_TSV,
+                                                         min_query_cov,
+                                                         min_seq_id,
+                                                         rtab_input)
     
     # 3) Print the general QC Stats 
     ASC_Stats_DF = get_AsmSeqCheck_QCStatsDF(Gene_PresAbs_WiAsmSeqCheck_DF)
@@ -124,11 +126,11 @@ def _asmseqcheck_cli(args):
     ## 1) Set input parameters and PATHs ####
     
     # Define input paths
-    input_PG_Ref_FA = args.in_pg_ref
+    input_PG_Ref_FA = args.pg_ref
 
-    input_AsmFA_TSV = args.in_assemblies
+    input_Assemblies_TSV = args.asms
 
-    input_PresAbs_CSV = args.in_gene_matrix
+    input_PresAbs_File = args.gene_matrix
 
     # Define output path
     output_PresAbs_WiDNASeqCheck = args.out_gene_matrix_wi_geneseqcheck
@@ -137,16 +139,18 @@ def _asmseqcheck_cli(args):
     min_query_cov = args.min_query_cov
     min_seq_id = args.min_seq_id
 
-    ## 2) Run the assembly sequence check function ####
+    # Set variable which defines whether the input gene matrix is an .Rtab file (or CSV file)
+    rtab_input = args.is_rtab
 
-    Gene_PresAbs_WiAsmSeqCheck_DF = asmseqcheck_frompaths(input_PresAbs_CSV,
-                                                          input_PG_Ref_FA,
-                                                          input_AsmFA_TSV,
-                                                          min_query_cov,
-                                                          min_seq_id)
+    ## 2) Run the assembly sequence check function ####
+    Gene_PresAbs_WiAsmSeqCheck_DF = asmseqcheck_frompaths(input_PresAbs_File,
+                                                         input_PG_Ref_FA,
+                                                         input_Assemblies_TSV,
+                                                         min_query_cov,
+                                                         min_seq_id,
+                                                         rtab_input)
 
     # 3) Print the general QC Stats
-
     _ = get_AsmSeqCheck_QCStats(Gene_PresAbs_WiAsmSeqCheck_DF)
 
 
@@ -195,7 +199,6 @@ def _nscluster_cli(args):
 
 
 
-# fg("blue") 
 def main():
     parser = argparse.ArgumentParser(description = "Toolkit for focused on augmenting common CDS based pan-genome analysis with nucleotide sequence comparison.")
     sub_parser_1 = parser.add_subparsers(required=True, help='Please select one of the pipelines of the PanQC toolkit.')
@@ -209,7 +212,7 @@ def main():
                                                     help="Input pan-genome nucleotide reference. Typically output as `pan_genome_reference.fasta` by Panaroo/Roary (FASTA)")
 
     nrc_parser.add_argument('-m', '--gene_matrix', type=str, required=True, metavar="gene_presence_absence.csv",
-                                                    help="Input pan-genome gene presence/absence matrix. Typically output as `gene_presence_absence.csv` by Panaroo/Roary (CSV)")
+                                                    help="Input pan-genome gene presence/absence matrix. By default is assumed to be a `gene_presence_absence.csv` output by Panaroo/Roary (CSV) \n If the user provides the --is-rtab flag, the input is assumed to be an .Rtab (TSV) file.")
 
     nrc_parser.add_argument('-o', '--results_dir', type=str, required=True,
                                                     help="Output directory for analysis results.")
@@ -228,7 +231,10 @@ def main():
     
     nrc_parser.add_argument('-t', '--min-ksim',type=float, default=0.8,
                             help='Minimum k-mer similarity (maximum jaccard containment of k-mers between pair of sequences) to cluster sequences into the same "nucleotide similarity cluster" (Default: 0.8))')
-
+    
+    nrc_parser.add_argument('--is-rtab', action='store_true',
+                                                    help="Flag indicating that the input gene matrix is a tab-delimited .Rtab file")
+    
     nrc_parser.set_defaults(func=_nrc_cli)
 
 
@@ -240,14 +246,14 @@ def main():
     utils_sub_parser = utils_parser.add_subparsers(required=True, help='Please select one of the utilility pipelines of the PanQC toolkit.')
 
     asmseqcheck_parser = utils_sub_parser.add_parser("asmseqcheck", help="")
-    asmseqcheck_parser.add_argument('-a', '--in_assemblies', type=str, required=True,
-                                    help="Paths to input assemblies. (TSV)")
+    asmseqcheck_parser.add_argument('-a', '--asms', type=str, required=True, metavar="PathToAsms.tsv",
+                                                    help="Table with SampleID & Paths to each input assemblies. (TSV)")
 
-    asmseqcheck_parser.add_argument('-r', '--in_pg_ref', type=str, required=True,
-                                    help="Input pan-genome nucleotide reference. Typically output as `pan_genome_reference.fasta` by Panaroo/Roary (FASTA)")
+    asmseqcheck_parser.add_argument('-r', '--pg-ref', type=str, required=True,  metavar="pan_genome_reference.fasta",
+                                                    help="Input pan-genome nucleotide reference. Typically output as `pan_genome_reference.fasta` by Panaroo/Roary (FASTA)")
 
-    asmseqcheck_parser.add_argument('-m', '--in_gene_matrix', type=str, required=True,
-                                    help="Input pan-genome gene presence/absence matrix. Typically output as `gene_presence_absence.csv` by Panaroo/Roary (CSV)")
+    asmseqcheck_parser.add_argument('-m', '--gene_matrix', type=str, required=True, metavar="gene_presence_absence.csv",
+                                                    help="Input pan-genome gene presence/absence matrix. By default is assumed to be a `gene_presence_absence.csv` output by Panaroo/Roary (CSV) \n If the user provides the --is-rtab flag, the input is assumed to be an .Rtab (TSV) file.")
 
     asmseqcheck_parser.add_argument('-o', '--out_gene_matrix_wi_geneseqcheck',type=str, required=True,
                                     help="Output pan-genome gene presence/absence matrix with updated gene presence/absence calls. (CSV). \n NOTE: 2 reflects that similar gene sequence is present at the nucleotide level (CSV)")
@@ -257,6 +263,10 @@ def main():
 
     asmseqcheck_parser.add_argument('-i', '--min_seq_id', type=float, default=0.9,
                             help="Minimum sequence identity to classify a gene as present within an assembly (0-1)")
+
+    asmseqcheck_parser.add_argument('--is-rtab', action='store_true',
+                                                    help="Flag indicating that the input gene matrix is a tab-delimited .Rtab file")
+    
 
     asmseqcheck_parser.set_defaults(func=_asmseqcheck_cli)
 

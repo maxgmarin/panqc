@@ -7,7 +7,8 @@ import warnings
 
 def parse_PresAbs_Rtab(PresAbs_Rtab_PATH):
     '''
-    This function parsesthe `gene_presence_absence.csv` file output by Panaroo '''
+    This function parses the `gene_presence_absence.Rtab` file output by many pan-genome analysis softwares (Panaroo, Roary)
+    '''
 
     i_Gene_PresAbs_DF = pd.read_csv(PresAbs_Rtab_PATH, sep = "\t")
 
