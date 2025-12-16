@@ -178,15 +178,12 @@ optional arguments:
 
 
 ## Contributing and Issues
->🚧 Check back soon 🚧
-
-
+Contributions, bug reports, and feature requests are welcome. Please open an issue on GitHub to report problems or propose improvements.
 
 ## Citing
->🚧 Check back soon 🚧
+If you use this tool in your work, please cite the following publication:
 
-
-<!---
-If you use `panqc` in your work, please cite:
-> TBD
---->
+Marin M.G., Quinones-Olvera N., Wippel C., *et al.*  
+**Pitfalls of bacterial pan-genome analysis approaches: a case study of *Mycobacterium tuberculosis* and two less clonal bacterial species.**  
+*Bioinformatics*, Volume 41, Issue 5, May 2025.  
+https://doi.org/10.1093/bioinformatics/btaf219
