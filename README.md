@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Static Badge](https://img.shields.io/badge/language-Python_3-blue)
+[![Bioconda](https://img.shields.io/conda/vn/bioconda/panqc.svg?label=Bioconda)](https://bioconda.github.io/recipes/panqc/README.html)
 <!---[![Build Status]()]()
 [![github release version]()]()
 [![DOI]()]()
@@ -56,7 +57,10 @@ pip install .
 ```
 
 ### `conda`
->🚧 Check back soon 🚧
+
+```
+conda install bioconda::panqc
+```
 
 
 
